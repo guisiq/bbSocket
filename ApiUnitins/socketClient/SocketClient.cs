@@ -32,7 +32,7 @@ namespace socketClient
                 byte[] bytes = new byte[1024];
                 int bytesRec = client.Receive(bytes);
                 string message = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                Console.WriteLine("Payment confirmed");
+                Console.WriteLine(message);
             }
         }
         public void WriteMessage()
