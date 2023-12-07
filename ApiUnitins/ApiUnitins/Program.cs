@@ -20,6 +20,8 @@ namespace ApiUnitins
 
             var app = builder.Build();
 
+            // SocketServer e instanciado aqui 
+            var socketServer = app.Services.GetRequiredService<SocketServer>();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
