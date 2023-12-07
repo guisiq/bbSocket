@@ -9,8 +9,11 @@ namespace ApiUnitins.Servise{
 
 public class SocketServer
 {
+
+
     private Socket listener;
-    private Dictionary<string, Socket> clients = new Dictionary<string, Socket>();
+    private Dictionary<string, Socket> pixControler = new Dictionary<string, Socket>();
+    private List<Thread> ClientsTreads = new List<Thread>();
 
     public SocketServer()
     {
@@ -24,16 +27,42 @@ public class SocketServer
         while (true)
         {
             Socket handler = listener.Accept();
-            byte[] bytes = new byte[1024];
-            int bytesRec = handler.Receive(bytes);
-            string pixKey = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-            clients[pixKey] = handler;
+            var thread = new Thread(() => {
+                                                try
+                                                {
+                                                    while (true)
+                                                    {
+                                                        byte[] buffer = new byte[1024];
+                                                        int bytesRead = handler.Receive(buffer);
+                                                        string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                                                        
+                                                        Console.WriteLine("Received message: " + message);
+
+                                                        if (message.StartsWith("pixChave:"))
+                                                        {
+                                                            string pixChave = message.Substring(9);
+                                                            pixControler[pixChave] = handler;
+                                                        }
+                                                    }
+                                                }
+                                                catch (SocketException ex)
+                                                {
+                                                    Console.WriteLine("SocketException: " + ex.Message);
+                                                }
+                                                finally
+                                                {
+                                                    handler.Close();
+                                                }
+                                            });
+            thread.Start();
+            ClientsTreads.Add(thread);
         }
     }
 
+
     public void SendPaymentConfirmation(string pixKey,Pix? pix = null)
     {
-        if (clients.ContainsKey(pixKey))
+        if (pixControler.ContainsKey(pixKey))
         {   
             string pixformatado;
             if(pix == null){
@@ -49,7 +78,7 @@ public class SocketServer
             } 
 
             byte[] msg = Encoding.ASCII.GetBytes("Payment confirmed\n" + pixformatado);
-            clients[pixKey].Send(msg);
+            pixControler[pixKey].Send(msg);
         }
     }
 }
