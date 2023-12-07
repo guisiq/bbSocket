@@ -1,4 +1,6 @@
 
+using ApiUnitins.Servise;
+
 namespace ApiUnitins
 {
     public class Program
@@ -9,6 +11,8 @@ namespace ApiUnitins
 
             // Add services to the container.
 
+            //define o socketServer como um serviço singleton
+            builder.Services.AddSingleton<SocketServer>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

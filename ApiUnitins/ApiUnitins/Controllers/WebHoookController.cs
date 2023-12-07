@@ -9,10 +9,12 @@ namespace ApiUnitins.Controllers
     [ApiController]
     public class WebHoookController : ControllerBase
     {
-        private SocketServer socketServer;
-        public WebHoookController()
+        
+        private readonly SocketServer socketServer;
+
+        public WebHoookController(SocketServer socketServer)
         {
-            socketServer = new SocketServer();
+            this.socketServer = socketServer;
         }
 
 
@@ -21,8 +23,10 @@ namespace ApiUnitins.Controllers
         {
             receberPix.pix.ForEach(pix =>
             {
+                Console.WriteLine("imprimindo messagem");
                 socketServer.SendPaymentConfirmation(pix.chave);
             });
+            Console.WriteLine("imprimindo messagem");
             return "API Unitins BB";
         }
 
