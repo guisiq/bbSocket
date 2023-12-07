@@ -24,7 +24,7 @@ namespace ApiUnitins.Controllers
             receberPix.pix.ForEach(pix =>
             {
                 Console.WriteLine("imprimindo messagem");
-                socketServer.SendPaymentConfirmation(pix.chave);
+                socketServer.SendPaymentConfirmation(pix.chave,pix);
             });
             Console.WriteLine("imprimindo messagem");
             return "API Unitins BB";
