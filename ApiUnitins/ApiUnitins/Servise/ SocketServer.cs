@@ -20,7 +20,7 @@ public class SocketServer
         listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         listener.Bind(new IPEndPoint(IPAddress.Any, 1234));
         listener.Listen(10);
-        StartListening();
+        new Thread(StartListening).Start();
     }
 
     public void StartListening()
