@@ -2,14 +2,13 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ApiUnitins.Model;
 
 
 namespace ApiUnitins.Servise{
 
 public class SocketServer
 {
-    public event Action<string> DataReceived;
-
     private Socket listener;
     private Dictionary<string, Socket> clients = new Dictionary<string, Socket>();
 
@@ -32,11 +31,24 @@ public class SocketServer
         }
     }
 
-    public void SendPaymentConfirmation(string pixKey)
+    public void SendPaymentConfirmation(string pixKey,Pix? pix = null)
     {
         if (clients.ContainsKey(pixKey))
-        {
-            byte[] msg = Encoding.ASCII.GetBytes("Payment confirmed");
+        {   
+            string pixformatado;
+            if(pix == null){
+                pixformatado = "sem dados";
+            }else{
+                pixformatado =     "\tChave       : " + pix.chave + "\n" +
+                                   "\tValor       : " + pix.valor + "\n" +
+                                   "\tPagador     : " + pix.pagador.nome + "\n" +
+                                   "\tCPF         : " + pix.pagador.cpf + "\n" +
+                                   "\tHorario     : " + pix.horario + "\n" +
+                                   "\tInfoPagador : " + pix.infoPagador + "\n" +
+                                   "\tValor       : " + pix.componentesValor.original.valor + "\n";
+            } 
+
+            byte[] msg = Encoding.ASCII.GetBytes("Payment confirmed\n" + pixformatado);
             clients[pixKey].Send(msg);
         }
     }
