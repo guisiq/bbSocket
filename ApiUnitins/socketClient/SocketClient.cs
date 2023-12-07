@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 
 namespace socketClient
 {
     public class SocketClient
     {
         private Socket client;
-        private list<String> pixKey;
+        private List<String> pixKey;
 
         public SocketClient()
         {
@@ -17,9 +20,9 @@ namespace socketClient
 
         public void ConnectToServer()
         {
-            client.Connect(new IPEndPoint(IPAddress.Loopback, 11000));
-            (new Thread(ListenForMessages())).Start();
-            (new Thread(WriteMessage())).Start();
+            client.Connect(new IPEndPoint(IPAddress.Loopback, 1234));
+            new Thread(ListenForMessages).Start();
+            new Thread(WriteMessage).Start();
         }
 
         public void ListenForMessages()
