@@ -18,8 +18,9 @@ public class SocketServer
     public SocketServer()
     {
         listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        listener.Bind(new IPEndPoint(IPAddress.Any, 11000));
+        listener.Bind(new IPEndPoint(IPAddress.Any, 1234));
         listener.Listen(10);
+        StartListening();
     }
 
     public void StartListening()
@@ -65,7 +66,7 @@ public class SocketServer
         };
     }
 
-        public void SendPaymentConfirmation(string pixKey,Pix? pix = null)
+    public void SendPaymentConfirmation(string pixKey,Pix? pix = null)
     {
         if (pixControler.ContainsKey(pixKey))
         {   
