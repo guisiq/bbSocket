@@ -13,7 +13,7 @@ public class SocketServer
 
     private Socket listener;
     private Dictionary<string, Socket> pixControler = new Dictionary<string, Socket>();
-    //private List<Thread> ClientsTreads = new List<Thread>();
+
 
     public SocketServer()
     {
@@ -30,7 +30,6 @@ public class SocketServer
             Socket handler = listener.Accept();
             var thread = new Thread(HandleClient(handler));
             thread.Start();
-            //ClientsTreads.Add(thread);
         }
     }
 

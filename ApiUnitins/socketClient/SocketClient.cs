@@ -11,7 +11,6 @@ namespace socketClient
     public class SocketClient
     {
         private Socket client;
-        private List<String> pixKey;
 
         public SocketClient()
         {
