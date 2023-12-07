@@ -27,40 +27,45 @@ public class SocketServer
         while (true)
         {
             Socket handler = listener.Accept();
-            var thread = new Thread(() => {
-                                                try
-                                                {
-                                                    while (true)
-                                                    {
-                                                        byte[] buffer = new byte[1024];
-                                                        int bytesRead = handler.Receive(buffer);
-                                                        string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                                                        
-                                                        Console.WriteLine("Received message: " + message);
-
-                                                        if (message.StartsWith("pixChave:"))
-                                                        {
-                                                            string pixChave = message.Substring(9);
-                                                            pixControler[pixChave] = handler;
-                                                        }
-                                                    }
-                                                }
-                                                catch (SocketException ex)
-                                                {
-                                                    Console.WriteLine("SocketException: " + ex.Message);
-                                                }
-                                                finally
-                                                {
-                                                    handler.Close();
-                                                }
-                                            });
+            var thread = new Thread(HandleClient(handler));
             thread.Start();
             ClientsTreads.Add(thread);
         }
     }
 
+    private ThreadStart HandleClient(Socket handler)
+    {
+        return () =>
+        {
+            try
+            {
+                while (true)
+                {
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = handler.Receive(buffer);
+                    string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-    public void SendPaymentConfirmation(string pixKey,Pix? pix = null)
+                    Console.WriteLine("Received message: " + message);
+
+                    if (message.StartsWith("pixChave:"))
+                    {
+                        string pixChave = message.Substring(9);
+                        pixControler[pixChave] = handler;
+                    }
+                }
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine("SocketException: " + ex.Message);
+            }
+            finally
+            {
+                handler.Close();
+            }
+        };
+    }
+
+        public void SendPaymentConfirmation(string pixKey,Pix? pix = null)
     {
         if (pixControler.ContainsKey(pixKey))
         {   
